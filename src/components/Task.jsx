@@ -4,14 +4,15 @@ export default function Task() {
       <div className="flex justify-between items-center">
         {/* priority level color */}
         <p className="w-10 h-2 bg-blue-600 rounded-md mb-3"></p>
-        <button className="p-2 rounded-full bg-slate-100 hover:bg-slate-200">
+        <button className="flex justify-center items-center gap-1 rounded-lg bg-slate-200 hover:bg-slate-300 px-2 py-1">
+          <span className="text-sm">Add Member</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-4 h-4"
+            className="w-5 h-5"
           >
             <path
               strokeLinecap="round"
@@ -21,7 +22,7 @@ export default function Task() {
           </svg>
         </button>
       </div>
-      <h3 className="text-xl font-medium line-clamp-2 mb-2">
+      <h3 className="text-xl font-medium line-clamp-2 my-2">
         Create todo application
       </h3>
       <p className="mb-4 line-clamp-2">
