@@ -80,7 +80,7 @@ export default function Login() {
                 to="/register"
               >
                 Signup
-              </Link>
+              </Link>{" "}
               now
             </p>
           </div>

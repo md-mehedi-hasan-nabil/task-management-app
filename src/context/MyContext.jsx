@@ -107,6 +107,7 @@ export default function MyProvider({ children }) {
     // get data form localstore and initilize state as default
     setLoading(true);
     const loginUserInfo = getData("auth");
+  
     if (loginUserInfo) {
       setAuth(loginUserInfo);
       setLoading(false);

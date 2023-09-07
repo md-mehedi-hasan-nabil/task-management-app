@@ -17,7 +17,13 @@ export default function Register() {
 
     let reader = new FileReader();
     reader.onloadend = function () {
-      const result = createAccount({ username, password, bio, image: reader.result });
+      const result = createAccount({
+        username,
+        password,
+        bio,
+        image: reader.result,
+      });
+      console.log(result);
     };
     reader.readAsDataURL(imageFile[0]);
   }

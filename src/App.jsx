@@ -7,9 +7,11 @@ import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
+    <>
     <MyProvider>
       <RouterProvider router={router} />
       <Toaster />
     </MyProvider>
+    </>
   );
 }

@@ -4,6 +4,7 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-.taskitem:hover .add-member{
- display: block;
+.taskitem:hover .add-member {
+  display: block;
 }
+
