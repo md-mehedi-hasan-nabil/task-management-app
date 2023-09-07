@@ -22,12 +22,18 @@ export default function Profile() {
         <h2 className="text-2xl font-semibold capitalize text-center my-5">
           {auth?.username}
         </h2>
-        <p className="text-center text-lg px-4 md:px-20">
-          Hi! I am {auth?.username}. <br />I am interested in web technologies. I
-          am a front-end web developer. Create a website's graphical user
-          interface using HTML, CSS and JavaScript. In my spare/free time, I
-          like to hangout with my friends.
-        </p>
+        <div className="text-center">
+          <p className="capitalize font-medium text-xl mb-3">
+            Hi! I am {auth?.username}. {auth?.bio}
+          </p>
+          <p className=" text-lg px-4 md:px-20">
+            I am interested in web technologies. I am a front-end web developer.
+            Create a website's graphical user interface using HTML, CSS and
+            JavaScript. In my spare/free time, I like to hangout with my
+            friends.
+          </p>
+        </div>
+
         <div className="text-center mt-5">
           <p className="text-xl">
             <b>Task:</b> 3

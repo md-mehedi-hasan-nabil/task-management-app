@@ -5,6 +5,8 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Profile from "../pages/Profile";
+import PrivateRoute from "./PrivateRoute";
+import AllTasks from "../pages/AllTasks";
 
 const router = createBrowserRouter([
   {
@@ -22,15 +24,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/tasks",
-        // element: <AllTasks />
+        element: (
+          <PrivateRoute>
+            <AllTasks />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/profile",
-        element: <Profile />,
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/",
-        element: <Home />,
+        element: (
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        ),
       },
     ],
   },

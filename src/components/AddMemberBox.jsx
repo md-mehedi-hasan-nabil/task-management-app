@@ -1,12 +1,12 @@
 import { useState } from "react";
 
-export default function AddMemberBox() {
+export default function AddMemberBox({ color }) {
   const [addMemberBox, setAddMemberBox] = useState(false);
   return (
     <div>
       <div className="flex justify-between items-center">
         {/* priority level color */}
-        <p className="w-10 h-2 bg-blue-600 rounded-md mb-3"></p>
+        <p className={`w-10 h-2 rounded-md mb-3 ${color}`}></p>
         <button
           onClick={() => setAddMemberBox((prev) => !prev)}
           className="flex justify-center items-center gap-1 rounded-full bg-slate-200 hover:bg-slate-300 px-2 py-1 border border-blue-600"

@@ -6,10 +6,10 @@ const AUTH_DB = "auth";
 const TASKS_DB = "tasks";
 const USERS_DB = "users";
 
-export const MyContext = createContext(null);
+export const MyContext = createContext({});
 
 export default function MyProvider({ children }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [auth, setAuth] = useState(null);
 
   /**
@@ -88,7 +88,7 @@ export default function MyProvider({ children }) {
     const user = { userId: uuidv4(), username, password, bio, image };
 
     const users = getData(USERS_DB);
-    console.log(users);
+   
     if (users) {
       setData(USERS_DB, JSON.stringify([...users, user]));
 
@@ -114,12 +114,12 @@ export default function MyProvider({ children }) {
   function getPriorityColor(priority) {
     let color = "";
     if (priority === "high") {
-      color = "bg-red-200";
+      color = "bg-red-600";
     } else if (priority === "medium") {
-      color = "bg-blue-200";
+      color = "bg-blue-600";
     } else {
       // for low
-      color = "bg-yellow-200";
+      color = "bg-yellow-600";
     }
     return color;
   }
@@ -171,7 +171,7 @@ export default function MyProvider({ children }) {
     return getData(USERS_DB) ? getData(USERS_DB) : [];
   }
 
-  function addTeamMember() {}
+  // function addTeamMember() {}
 
   useEffect(() => {
     // get data form localstore and initilize state as default
