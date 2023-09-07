@@ -1,14 +1,14 @@
 import PropTypes from "prop-types";
-import Task from "./Task";
+import TaskItem from "./TaskItem";
 
 export default function TaskStatusBoard({ status, openModal }) {
   return (
     <div
-      className="col-span-12 md:col-span-4 px-4 pt-4 bg-slate-100 rounded-md"
+      className="col-span-12 md:col-span-4 px-4 pt-4 border bg-slate-100 rounded-md"
       style={{ height: "86vh" }}
     >
       <div className="flex justify-between">
-        <h2 className="mb-2 font-medium capitalize">{status}</h2>
+        <h2 className="text-lg ml-1 mb-2 font-medium capitalize">{status}</h2>
         {status === "pending" && (
           <button
             onClick={openModal}
@@ -19,19 +19,9 @@ export default function TaskStatusBoard({ status, openModal }) {
         )}
       </div>
       <div className="flex flex-col gap-4 overflow-y-scroll h-full pt-2">
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
+        <TaskItem />
+        <TaskItem />
+        <TaskItem />
       </div>
     </div>
   );

@@ -1,12 +1,33 @@
+import { useContext } from "react";
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { MyContext } from "../context/MyContext";
+import toast from "react-hot-toast";
 
 export default function Login() {
+  const { login } = useContext(MyContext);
+
+  const {
+    register,
+    handleSubmit,
+  } = useForm();
+
+  function onSubmit(data) {
+    const { username, password } = data;
+    const result = login(username, password);
+
+    if (result?.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
+  }
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-full md:w-96 mx-auto border p-8 rounded-lg">
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Link to="/">
-            <h2 className="text-3xl mb-5 font-semibold text-slate-800">
+            <h2 className="text-2xl mb-5 font-semibold text-slate-800">
               Login to your account
             </h2>
           </Link>
@@ -18,8 +39,10 @@ export default function Login() {
               Username
             </label>
             <input
+              {...register("username")}
               type="text"
               id="username"
+              name="username"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               placeholder="Type username..."
               required
@@ -33,8 +56,10 @@ export default function Login() {
               Password
             </label>
             <input
+              {...register("password")}
               type="password"
               id="password"
+              name="password"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               placeholder="Type password..."
               required
@@ -49,7 +74,14 @@ export default function Login() {
           </button>
           <div>
             <p className="mt-2">
-              Donot have an account? <Link className="text-blue-600 hover:text-blue-700" to="/register">Signup</Link> now
+              Donot have an account?{" "}
+              <Link
+                className="text-blue-600 hover:text-blue-700"
+                to="/register"
+              >
+                Signup
+              </Link>
+              now
             </p>
           </div>
         </form>

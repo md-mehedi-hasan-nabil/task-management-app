@@ -1,11 +1,21 @@
-export default function Task() {
+import { useState } from "react";
+import Avatar from "./Avatar";
+
+export default function TaskItem() {
+  const [addMemberBox, setAddMemberBox] = useState(false);
+
   return (
-    <div className="border rounded-lg p-4 bg-gradient-to-br from-white to-slate-200 hover:border-blue-400">
+    <div className="taskitem border-2 rounded-lg p-4 bg-gradient-to-br from-white to-slate-200 hover:border-blue-400">
       <div className="flex justify-between items-center">
         {/* priority level color */}
         <p className="w-10 h-2 bg-blue-600 rounded-md mb-3"></p>
-        <button className="flex justify-center items-center gap-1 rounded-lg bg-slate-200 hover:bg-slate-300 px-2 py-1">
-          <span className="text-sm">Add Member</span>
+        <button
+          onClick={() => setAddMemberBox((prev) => !prev)}
+          className="flex justify-center items-center gap-1 rounded-full bg-slate-200 hover:bg-slate-300 px-2 py-1 border border-blue-600"
+        >
+          <span className="add-member hidden text-sm font-medium">
+            {addMemberBox ? "Cancel" : "Add Member"}
+          </span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -22,7 +32,38 @@ export default function Task() {
           </svg>
         </button>
       </div>
-      <h3 className="text-xl font-medium line-clamp-2 my-2">
+      {addMemberBox && (
+        <div className=" my-3">
+          <div className="">
+            <label
+              htmlFor="status"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Add team member
+            </label>
+            <div className="flex items-center gap-1 justify-start">
+              <select
+                id="status"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
+              >
+                <option value="">Team member 1</option>
+                <option value="">Team member 2</option>
+                <option value="">Team member 3</option>
+                <option value="">Team member 4</option>
+              </select>
+              <button className="bg-blue-600 hover:bg-blue-700 py-1.5 px-3 text-white rounded-md">
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <div>
+        <span className="capitalize bg-red-100 text-red-800 text-xs font-medium mr-2 px-2 py-0.5 rounded-full border border-red-400">
+          pending
+        </span>
+      </div>
+      <h3 className="text-xl font-semibold line-clamp-2 my-2">
         Create todo application
       </h3>
       <p className="mb-4 line-clamp-2">
@@ -89,26 +130,9 @@ export default function Task() {
 
       <div className="flex justify-end items-center mt-3">
         <div className="flex -space-x-4">
-          <img
-            className="w-10 h-10 rounded-full border-4 border-white"
-            src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-            alt="avatar"
-          />
-          <img
-            className="w-10 h-10 rounded-full border-4 border-white"
-            src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-            alt="avatar"
-          />
-          <img
-            className="w-10 h-10 rounded-full border-4 border-white"
-            src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-            alt="avatar"
-          />
-          <img
-            className="w-10 h-10 rounded-full border-4 border-white"
-            src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-            alt="avatar"
-          />
+          <Avatar />
+          <Avatar />
+          <Avatar />
           <p className="w-10 h-10 rounded-full border-4 bg-slate-200 border-white text-lg font-medium flex justify-center items-center">
             <span>+3</span>
           </p>

@@ -1,12 +1,35 @@
+import { useContext } from "react";
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { MyContext } from "../context/MyContext";
 
 export default function Register() {
+  const { createAccount } = useContext(MyContext);
+
+  const {
+    register,
+    handleSubmit,
+    // formState: { errors },
+  } = useForm();
+
+  function onSubmit(data) {
+    const { username, password, bio, image: imageFile } = data;
+
+    let reader = new FileReader();
+    reader.onloadend = function () {
+      const result = createAccount({ username, password, bio, image: reader.result });
+    };
+    reader.readAsDataURL(imageFile[0]);
+  }
+
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="w-full md:w-96 mx-auto border p-6 rounded-lg">
-        <form>
+      <div className="w-full md:w-[30rem] mx-auto border p-6 rounded-lg">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Link to="/">
-            <h2 className="text-2xl my-5 font-semibold text-slate-800">Create your account</h2>
+            <h2 className="text-2xl my-5 font-semibold text-slate-800">
+              Create your account
+            </h2>
           </Link>
           <div className="mb-6">
             <label
@@ -16,8 +39,10 @@ export default function Register() {
               Username
             </label>
             <input
+              {...register("username")}
               type="text"
               id="username"
+              name="username"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               placeholder="Type username..."
               required
@@ -31,8 +56,10 @@ export default function Register() {
               Password
             </label>
             <input
+              {...register("password")}
               type="password"
               id="password"
+              name="password"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               placeholder="Type password..."
               required
@@ -40,14 +67,16 @@ export default function Register() {
           </div>
           <div className="mb-6">
             <label
-              htmlFor="message"
+              htmlFor="bio"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
               Bio
             </label>
             <textarea
-              id="message"
+              {...register("bio")}
+              id="bio"
               rows="4"
+              name="bio"
               className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Type bio..."
             ></textarea>
@@ -61,6 +90,8 @@ export default function Register() {
               Upload file
             </label>
             <input
+              {...register("image")}
+              name="image"
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
               id="user_avatar"
               type="file"
