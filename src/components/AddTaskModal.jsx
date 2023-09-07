@@ -1,6 +1,29 @@
 import PropTypes from "prop-types";
+import { useContext } from "react";
+import { useForm } from "react-hook-form";
+import { MyContext } from "../context/MyContext";
+import toast from "react-hot-toast";
 
 export default function AddTaskModal({ closeModal }) {
+  const { addNewTask } = useContext(MyContext);
+  const { register, handleSubmit, reset } = useForm();
+
+  function onSubmit(data) {
+    const { title, description, finishDate, priority } = data;
+    const result = addNewTask({
+      title,
+      description,
+      finishDate,
+      priority,
+    });
+    if (result.success) {
+      reset();
+      toast.success(result?.message);
+      closeModal();
+    } else {
+      toast.error(result?.message);
+    }
+  }
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 max-h-full flex justify-center backdrop-blur-sm bg-slate-900/60 items-center">
@@ -32,7 +55,11 @@ export default function AddTaskModal({ closeModal }) {
               <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">
                 Add new task
               </h3>
-              <form className="space-y-6" action="#">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-6"
+                action="#"
+              >
                 <div>
                   <label
                     htmlFor="title"
@@ -41,6 +68,7 @@ export default function AddTaskModal({ closeModal }) {
                     Task title
                   </label>
                   <input
+                    {...register("title")}
                     type="text"
                     name="title"
                     id="title"
@@ -57,6 +85,7 @@ export default function AddTaskModal({ closeModal }) {
                     Task description
                   </label>
                   <textarea
+                    {...register("description")}
                     name="description"
                     id="description"
                     rows="4"
@@ -73,8 +102,9 @@ export default function AddTaskModal({ closeModal }) {
                     Data
                   </label>
                   <input
+                    {...register("finishDate")}
                     type="date"
-                    name="date"
+                    name="finishDate"
                     id="data"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                     placeholder="date"
@@ -90,6 +120,7 @@ export default function AddTaskModal({ closeModal }) {
                     Select priority level
                   </label>
                   <select
+                    {...register("priority")}
                     id="priority"
                     name="priority"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
@@ -97,24 +128,6 @@ export default function AddTaskModal({ closeModal }) {
                     <option value="high">High</option>
                     <option value="medium">Medium</option>
                     <option value="low">Low</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="members"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Assign team members
-                  </label>
-                  <select
-                    name="members"
-                    id="members"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
-                  >
-                    <option value="">Member 1</option>
-                    <option value="">Member 2</option>
-                    <option value="">Member 3</option>
                   </select>
                 </div>
 

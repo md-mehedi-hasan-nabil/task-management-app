@@ -3,7 +3,7 @@ import { MyContext } from "../context/MyContext";
 import { useContext } from "react";
 
 export default function Navbar() {
-  const { auth } = useContext(MyContext);
+  const { auth } = useContext(MyContext) || {};
 
   return (
     <nav className="sticky top-0 bg-white border-gray-200">
@@ -20,7 +20,9 @@ export default function Navbar() {
               data-dropdown-toggle="profile-dropdown-menu"
               className="inline-flex gap-2 items-center font-medium justify-center text-sm text-gray-900 rounded-full cursor-pointer hover:ring-4"
             >
-              <span className="capitalize text-base pl-2">{auth?.username}</span>
+              <span className="capitalize text-base pl-2">
+                {auth?.username}
+              </span>
               <img
                 className="w-12 h-12 rounded-full border-4 border-white"
                 src={auth?.image}

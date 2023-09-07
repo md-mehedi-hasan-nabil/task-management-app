@@ -2,6 +2,10 @@ import PropTypes from "prop-types";
 import { createContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+const AUTH_DB = "auth";
+const TASKS_DB = "tasks";
+const USERS_DB = "users";
+
 export const MyContext = createContext(null);
 
 export default function MyProvider({ children }) {
@@ -64,7 +68,7 @@ export default function MyProvider({ children }) {
    * @returns
    */
   function login(username, password) {
-    const users = getData("users");
+    const users = getData(USERS_DB);
     if (users) {
       const user = users.find(
         (user) => user.password === password && user.username === username
@@ -72,7 +76,7 @@ export default function MyProvider({ children }) {
 
       if (user) {
         setAuth(user);
-        setData("auth", user);
+        setData(AUTH_DB, user);
         return success("Login successfull", user);
       } else {
         return error("Username or password is wrong");
@@ -81,21 +85,20 @@ export default function MyProvider({ children }) {
   }
 
   function createAccount({ username, password, bio, image }) {
-    setLoading(true);
     const user = { userId: uuidv4(), username, password, bio, image };
 
-    const users = getData("users");
+    const users = getData(USERS_DB);
     console.log(users);
     if (users) {
-      setData("users", JSON.stringify([...users, user]));
-      setLoading(false);
+      setData(USERS_DB, JSON.stringify([...users, user]));
+
       return {
         success: true,
         message: "New account create successful.",
       };
     } else {
-      setData("users", JSON.stringify([user]));
-      setLoading(false);
+      setData(USERS_DB, JSON.stringify([user]));
+
       return {
         success: true,
         message: "New account create successful.",
@@ -103,11 +106,78 @@ export default function MyProvider({ children }) {
     }
   }
 
+  /**
+   *
+   * @param {string} priority
+   * @returns {string}
+   */
+  function getPriorityColor(priority) {
+    let color = "";
+    if (priority === "high") {
+      color = "bg-red-200";
+    } else if (priority === "medium") {
+      color = "bg-blue-200";
+    } else {
+      // for low
+      color = "bg-yellow-200";
+    }
+    return color;
+  }
+
+  function addNewTask(task) {
+    const auth_user = getData(AUTH_DB);
+
+    if (auth_user) {
+      const { username, userId, image } = auth_user;
+      const { title, description, priority, finishDate } = task;
+      const color = getPriorityColor(priority);
+
+      const newTask = {
+        id: uuidv4(),
+        title,
+        description,
+        createdAt: new Date().toLocaleDateString(),
+        priority,
+        color,
+        finishDate,
+        status: "pending",
+        user: {
+          userId,
+          username,
+          image,
+        },
+        team_members: [],
+      };
+
+      const tasks = getData(TASKS_DB);
+
+      if (tasks) {
+        setData(TASKS_DB, [...tasks, newTask]);
+        return success("Task add successfull.", newTask);
+      } else {
+        setData(TASKS_DB, [newTask]);
+        return success("Task add successfull.", newTask);
+      }
+    } else {
+      return error("unauthorised");
+    }
+  }
+
+  function getTasks() {
+    return getData(TASKS_DB) ? getData(TASKS_DB) : [];
+  }
+
+  function getUsers() {
+    return getData(USERS_DB) ? getData(USERS_DB) : [];
+  }
+
+  function addTeamMember() {}
+
   useEffect(() => {
     // get data form localstore and initilize state as default
     setLoading(true);
-    const loginUserInfo = getData("auth");
-  
+    const loginUserInfo = getData(AUTH_DB);
+
     if (loginUserInfo) {
       setAuth(loginUserInfo);
       setLoading(false);
@@ -122,6 +192,9 @@ export default function MyProvider({ children }) {
     createAccount,
     login,
     auth,
+    addNewTask,
+    getTasks,
+    getUsers,
   };
 
   return <MyContext.Provider value={state}>{children}</MyContext.Provider>;

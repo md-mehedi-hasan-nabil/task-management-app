@@ -1,25 +1,21 @@
+import PropTypes from "prop-types";
 import Avatar from "./Avatar";
 import AddMemberBox from "./AddMemberBox";
 import ChangeTaskStatus from "./ChangeTaskStatus";
 
-export default function TaskItem() {
+export default function TaskItem({ task }) {
+  console.log(task);
+  const { title, description, status, finishDate, team_members } = task;
   return (
     <div className="taskitem border-2 rounded-lg p-4 bg-gradient-to-br from-white to-slate-200 hover:border-blue-400">
       <AddMemberBox />
       <div>
         <span className="capitalize bg-red-100 text-red-800 text-xs font-medium mr-2 px-2 py-0.5 rounded-full border border-red-400">
-          pending
+          {status}
         </span>
       </div>
-      <h3 className="text-xl font-semibold line-clamp-2 my-2">
-        Create todo application
-      </h3>
-      <p className="mb-4 line-clamp-2">
-        description: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        Quia qui odio, fugiat iste debitis iure sint quas explicabo excepturi
-        perferendis repudiandae fugit praesentium ratione ab, molestias placeat
-        quisquam dolore asperiores!
-      </p>
+      <h3 className="text-xl font-semibold line-clamp-2 my-2">{title}</h3>
+      <p className="mb-4 line-clamp-2">{description}</p>
 
       <div className="flex gap-2 my-2">
         <p className="flex items-center gap-1 text-sm">
@@ -55,7 +51,7 @@ export default function TaskItem() {
               d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span>April 20</span>
+          <span>{finishDate}</span>
         </p>
       </div>
 
@@ -74,3 +70,7 @@ export default function TaskItem() {
     </div>
   );
 }
+
+TaskItem.propTypes = {
+  task: PropTypes.object.isRequired,
+};

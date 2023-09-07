@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 export default function Avatar({
   src = "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
 }) {
@@ -10,4 +12,6 @@ export default function Avatar({
   );
 }
 
-
+Avatar.propTypes = {
+  src: PropTypes.string.isRequired,
+};

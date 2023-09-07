@@ -1,7 +1,16 @@
 import PropTypes from "prop-types";
 import TaskItem from "./TaskItem";
 
-export default function TaskStatusBoard({ status, openModal }) {
+export default function TaskStatusBoard({ status, openModal, tasks }) {
+  let content;
+  if (tasks?.length === 0) {
+    content = <h2>No task here</h2>;
+  } else if (tasks?.length > 0) {
+    content = tasks?.map((task) => <TaskItem key={task?.id} task={task} />);
+  } else {
+    content = <h2>Something is wrong.</h2>;
+  }
+
   return (
     <div
       className="col-span-12 md:col-span-4 px-4 pt-4 border bg-slate-100 rounded-md"
@@ -19,9 +28,7 @@ export default function TaskStatusBoard({ status, openModal }) {
         )}
       </div>
       <div className="flex flex-col gap-4 overflow-y-scroll h-full pt-2">
-        <TaskItem />
-        <TaskItem />
-        <TaskItem />
+        {content}
       </div>
     </div>
   );
@@ -29,5 +36,6 @@ export default function TaskStatusBoard({ status, openModal }) {
 
 TaskStatusBoard.propTypes = {
   status: PropTypes.string.isRequired,
+  tasks: PropTypes.array.isRequired,
   openModal: PropTypes.func,
 };
