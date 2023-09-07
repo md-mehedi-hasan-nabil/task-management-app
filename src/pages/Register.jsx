@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export default function Register() {
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="w-full md:w-96 mx-auto">
+      <div className="w-full md:w-96 mx-auto border p-6 rounded-lg">
         <form>
           <Link to="/">
             <h2 className="text-2xl my-5 font-semibold text-slate-800">Create your account</h2>
@@ -74,7 +74,7 @@ export default function Register() {
             Create an account
           </button>
 
-          <p className="my-2">
+          <p className="mt-2">
             Already have an account{" "}
             <Link className="text-blue-600 hover:text-blue-700" to="/login">
               login here

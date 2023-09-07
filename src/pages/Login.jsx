@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 export default function Login() {
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="w-full md:w-96 mx-auto">
+      <div className="w-full md:w-96 mx-auto border p-8 rounded-lg">
         <form>
           <Link to="/">
-            <h2 className="text-2xl my-5 font-semibold text-slate-800">
+            <h2 className="text-3xl mb-5 font-semibold text-slate-800">
               Login to your account
             </h2>
           </Link>
@@ -48,7 +48,7 @@ export default function Login() {
             Login
           </button>
           <div>
-            <p className="my-2">
+            <p className="mt-2">
               Donot have an account? <Link className="text-blue-600 hover:text-blue-700" to="/register">Signup</Link> now
             </p>
           </div>

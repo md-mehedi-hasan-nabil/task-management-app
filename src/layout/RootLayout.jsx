@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 export default function RootLayout() {
@@ -6,6 +6,7 @@ export default function RootLayout() {
 
   return (
     <>
+     <ScrollRestoration />
       {location.pathname !== "/login" && location.pathname !== "/register" && (
         <Navbar />
       )}
