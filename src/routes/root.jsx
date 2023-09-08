@@ -7,6 +7,7 @@ import Register from "../pages/Register";
 import Profile from "../pages/Profile";
 import PrivateRoute from "./PrivateRoute";
 import AllTasks from "../pages/AllTasks";
+import PublicRoute from "./PublicRoute";
 
 const router = createBrowserRouter([
   {
@@ -16,11 +17,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/login",
-        element: <Login />,
+        element: <PublicRoute><Login /></PublicRoute>,
       },
       {
         path: "/register",
-        element: <Register />,
+        element: <PublicRoute><Register /></PublicRoute>,
       },
       {
         path: "/tasks",

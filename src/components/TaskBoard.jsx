@@ -12,6 +12,7 @@ export default function TaskBoard() {
 
   useEffect(() => {
     const result = getTasks();
+    console.log(result)
     const pendingTasksData = result.filter((task) => task.status === "pending");
     const inProgressTasksData = result.filter(
       (task) => task.status === "inprogress"

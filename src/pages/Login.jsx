@@ -1,16 +1,14 @@
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MyContext } from "../context/MyContext";
 import toast from "react-hot-toast";
 
 export default function Login() {
+  const navigate = useNavigate();
   const { login } = useContext(MyContext);
 
-  const {
-    register,
-    handleSubmit,
-  } = useForm();
+  const { register, handleSubmit } = useForm();
 
   function onSubmit(data) {
     const { username, password } = data;
@@ -18,6 +16,7 @@ export default function Login() {
 
     if (result?.success) {
       toast.success(result.message);
+      navigate("/")
     } else {
       toast.error(result.message);
     }

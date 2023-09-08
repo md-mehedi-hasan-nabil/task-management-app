@@ -1,9 +1,21 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { MyContext } from "../context/MyContext";
 import { useContext } from "react";
+import toast from "react-hot-toast";
 
 export default function Navbar() {
-  const { auth } = useContext(MyContext) || {};
+  const navigate = useNavigate();
+  const { auth, logout } = useContext(MyContext) || {};
+
+  function handleLogout() {
+    const result = logout();
+    if (result?.success) {
+      toast.success(result.message);
+      navigate("/login");
+    } else {
+      toast.error(result.message);
+    }
+  }
 
   return (
     <nav className="sticky top-0 bg-white border-gray-200">
@@ -35,7 +47,7 @@ export default function Navbar() {
               id="profile-dropdown-menu"
             >
               <ul className="py-2 font-medium" role="none">
-                <li>
+                <li onClick={handleLogout}>
                   <button
                     className="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     role="menuitem"

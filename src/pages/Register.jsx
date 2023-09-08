@@ -1,9 +1,11 @@
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MyContext } from "../context/MyContext";
+import toast from "react-hot-toast";
 
 export default function Register() {
+  const navigate = useNavigate();
   const { createAccount } = useContext(MyContext);
 
   const {
@@ -23,7 +25,12 @@ export default function Register() {
         bio,
         image: reader.result,
       });
-      console.log(result);
+      if (result?.success) {
+        toast.success(result.message);
+        navigate("/login");
+      } else {
+        toast.error(result.message);
+      }
     };
     reader.readAsDataURL(imageFile[0]);
   }

@@ -84,11 +84,21 @@ export default function MyProvider({ children }) {
     }
   }
 
+  function logout() {
+    const auth = getData(AUTH_DB);
+    if (auth) {
+      localStorage.removeItem(AUTH_DB);
+      return success("Logout success.");
+    } else {
+      return error("User information is not found.");
+    }
+  }
+
   function createAccount({ username, password, bio, image }) {
     const user = { userId: uuidv4(), username, password, bio, image };
 
     const users = getData(USERS_DB);
-   
+
     if (users) {
       setData(USERS_DB, JSON.stringify([...users, user]));
 
@@ -129,7 +139,7 @@ export default function MyProvider({ children }) {
 
     if (auth_user) {
       const { username, userId, image } = auth_user;
-      const { title, description, priority, finishDate } = task;
+      const { title, description, priority, due_date } = task;
       const color = getPriorityColor(priority);
 
       const newTask = {
@@ -139,7 +149,7 @@ export default function MyProvider({ children }) {
         createdAt: new Date().toLocaleDateString(),
         priority,
         color,
-        finishDate,
+        due_date,
         status: "pending",
         user: {
           userId,
@@ -191,6 +201,7 @@ export default function MyProvider({ children }) {
     loading,
     createAccount,
     login,
+    logout,
     auth,
     addNewTask,
     getTasks,

@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
 
-export default function PrivateRoute({ children }) {
+export default function PublicRoute({ children }) {
   const isLoggedIn = localStorage.getItem("auth")
 
-  return isLoggedIn ? children : <Navigate to="/login" />;
+  return !isLoggedIn ? children : <Navigate to="/" />;
 }
 
-PrivateRoute.propTypes = {
+PublicRoute.propTypes = {
   children: PropTypes.node.isRequired,
 };
