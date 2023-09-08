@@ -10,21 +10,22 @@ export default function TaskItem({ task }) {
     title,
     description,
     status,
-    finishDate,
+    due_date,
     team_members,
     color,
     priority,
   } = task;
-  
+
   return (
     <div className="taskitem border-2 rounded-lg p-4 bg-gradient-to-br from-white to-slate-200 hover:border-blue-400">
-      <AddMemberBox color={color} />
+      {status !== "completed" && <AddMemberBox color={color} />}
+
       <div>
         <span className="capitalize bg-red-100 text-red-800 text-xs font-medium mr-2 px-2 py-0.5 rounded-full border border-red-400">
           {status}
         </span>
       </div>
-      <h3 className="text-xl font-semibold line-clamp-2 my-2">{title}</h3>
+      <h3 className="text-xl font-semibold line-clamp-2 my-2 capitalize">{title}</h3>
       <p className="mb-4 line-clamp-2">{description}</p>
 
       <div className="flex gap-2 my-2">
@@ -49,7 +50,6 @@ export default function TaskItem({ task }) {
             {priority}
           </span>
         </p>
-
         <p className="flex items-center gap-1 text-sm">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +57,7 @@ export default function TaskItem({ task }) {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-5 h-5 animate-spin"
+            className={`w-5 h-5 ${priority === "high" ? "animate-spin" : ""}`}
           >
             <path
               strokeLinecap="round"
@@ -65,7 +65,7 @@ export default function TaskItem({ task }) {
               d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span>{finishDate}</span>
+          <span>{due_date}</span>
         </p>
       </div>
 

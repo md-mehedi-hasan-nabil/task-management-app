@@ -10,19 +10,24 @@ export default function AddTaskModal({ closeModal }) {
 
   function onSubmit(data) {
     const { title, description, due_date, priority } = data;
-    const result = addNewTask({
-      title,
-      description,
-      due_date,
-      priority,
-    });
-    if (result.success) {
-      reset();
-      toast.success(result?.message);
-      closeModal();
-      setRefetch(true);
+    
+    if (title && description && due_date && priority) {
+      const result = addNewTask({
+        title,
+        description,
+        due_date,
+        priority,
+      });
+      if (result.success) {
+        reset();
+        toast.success(result?.message);
+        closeModal();
+        setRefetch(true);
+      } else {
+        toast.error(result?.message);
+      }
     } else {
-      toast.error(result?.message);
+      toast.error("Field required.");
     }
   }
   return (
@@ -103,9 +108,9 @@ export default function AddTaskModal({ closeModal }) {
                     Data
                   </label>
                   <input
-                    {...register("finishDate")}
+                    {...register("due_date")}
                     type="date"
-                    name="finishDate"
+                    name="due_date"
                     id="data"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                     placeholder="date"

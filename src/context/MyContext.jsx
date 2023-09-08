@@ -104,7 +104,7 @@ export default function MyProvider({ children }) {
   }
 
   function createAccount({ username, password, bio, image }) {
-    const user = { userId: uuidv4(), username, password, bio, image };
+    const user = { id: uuidv4(), username, password, bio, image };
 
     const users = getData(USERS_DB);
 
@@ -152,7 +152,7 @@ export default function MyProvider({ children }) {
     const auth_user = getData(AUTH_DB);
 
     if (auth_user) {
-      const { username, userId, image } = auth_user;
+      const { username, id, image } = auth_user;
       const { title, description, priority, due_date } = task;
       const color = getPriorityColor(priority);
 
@@ -166,11 +166,11 @@ export default function MyProvider({ children }) {
         due_date,
         status: "pending",
         user: {
-          userId,
+          id,
           username,
           image,
         },
-        team_members: [{ id: uuidv4(), username, userId, image }],
+        team_members: [{ id: uuidv4(), username, userId: id, image }],
       };
 
       const tasks = getData(TASKS_DB);

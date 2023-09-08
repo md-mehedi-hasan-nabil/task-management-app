@@ -8,19 +8,14 @@ export default function TeamMembersAvatar({ team_members }) {
     content = <h2>No team member.</h2>;
   } else if (team_members?.length > 0) {
     content = team_members.map((team_member) => (
-      <Avatar key={team_member.username} src={team_member.image} />
+      <Avatar key={team_member?.username} src={team_member?.image} />
     ));
+  } else {
+    content = <h2>Something is wrong.</h2>;
   }
   return (
     <div className="flex justify-end items-center mt-3">
-      <div className="flex -space-x-4">
-        <Avatar />
-        <Avatar />
-        <Avatar />
-        <p className="w-10 h-10 rounded-full border-4 bg-slate-200 border-white text-lg font-medium flex justify-center items-center">
-          <span>+3</span>
-        </p>
-      </div>
+      <div className="flex -space-x-4">{content}</div>
     </div>
   );
 }

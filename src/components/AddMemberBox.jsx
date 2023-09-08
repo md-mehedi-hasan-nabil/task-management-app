@@ -9,7 +9,7 @@ export default function AddMemberBox({ color }) {
 
   useEffect(() => {
     const users = getUsers();
-    const teamMembersData = users.filter((user) => user.userId !== auth.userId);
+    const teamMembersData = users.filter((user) => user.id !== auth.id);
     if (teamMembersData) {
       setTeamMembers(teamMembersData);
     } else {
@@ -65,7 +65,7 @@ export default function AddMemberBox({ color }) {
       </div>
       {addMemberBox && (
         <div className=" my-3">
-          <div className="">
+          <>
             <label
               htmlFor="status"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -73,21 +73,30 @@ export default function AddMemberBox({ color }) {
               Add team member
             </label>
             <div className="flex items-center gap-1 justify-start">
-              <select
-                id="status"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
-              >
-                {teamMembers.map((teamMember) => (
-                  <option key={teamMember?.id} value={teamMember?.id}>
-                    {teamMember.username}
-                  </option>
-                ))}
-              </select>
-              <button className="bg-blue-600 hover:bg-blue-700 py-1.5 px-3 text-white rounded-md">
-                Add
-              </button>
+              {teamMembers?.length > 0 ? (
+                <>
+                  <select
+                    id="status"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
+                  >
+                    {teamMembers.map((teamMember) => (
+                      <option key={teamMember?.userId} value={teamMember?.id}>
+                        {teamMember.username}
+                      </option>
+                    ))}
+                  </select>
+                  <button className="bg-blue-600 hover:bg-blue-700 py-1.5 px-3 text-white rounded-md">
+                    Add
+                  </button>
+                </>
+              ) : (
+                <p className="mt-2 font-medium text-red-600 text-sm bg-red-200 rounded-lg py-1 px-2 animate-bounce border-2 border-red-400">
+                  No users have been created yet in this system. Please register
+                  multiple users.
+                </p>
+              )}
             </div>
-          </div>
+          </>
         </div>
       )}
     </div>
