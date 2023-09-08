@@ -4,7 +4,7 @@ import TaskStatusBoard from "./TaskStatusBoard";
 import { MyContext } from "../context/MyContext";
 
 export default function TaskBoard() {
-  const { getTasks } = useContext(MyContext);
+  const { getTasks, refetch, setRefetch } = useContext(MyContext);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [pendingTasks, setPendingTasks] = useState([]);
   const [inProgressTasks, setInProgressTasks] = useState([]);
@@ -24,7 +24,8 @@ export default function TaskBoard() {
     setPendingTasks(pendingTasksData);
     setInProgressTasks(inProgressTasksData);
     setCompletedTasks(completedTasksData);
-  }, [getTasks]);
+    setRefetch(false)
+  }, [getTasks, refetch, setRefetch]);
 
   const openModal = () => {
     setIsOpenModal(true);

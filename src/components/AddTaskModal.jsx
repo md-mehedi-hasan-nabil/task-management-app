@@ -5,21 +5,22 @@ import { MyContext } from "../context/MyContext";
 import toast from "react-hot-toast";
 
 export default function AddTaskModal({ closeModal }) {
-  const { addNewTask } = useContext(MyContext);
+  const { addNewTask, setRefetch } = useContext(MyContext);
   const { register, handleSubmit, reset } = useForm();
 
   function onSubmit(data) {
-    const { title, description, finishDate, priority } = data;
+    const { title, description, due_date, priority } = data;
     const result = addNewTask({
       title,
       description,
-      finishDate,
+      due_date,
       priority,
     });
     if (result.success) {
       reset();
       toast.success(result?.message);
       closeModal();
+      setRefetch(true);
     } else {
       toast.error(result?.message);
     }

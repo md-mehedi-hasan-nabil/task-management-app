@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
-import Avatar from "./Avatar";
 import AddMemberBox from "./AddMemberBox";
 import ChangeTaskStatus from "./ChangeTaskStatus";
+import TeamMembersAvatar from "./TeamMembersAvatar";
 
 export default function TaskItem({ task }) {
   console.log(task);
   const {
+    id,
     title,
     description,
     status,
@@ -14,6 +15,7 @@ export default function TaskItem({ task }) {
     color,
     priority,
   } = task;
+  
   return (
     <div className="taskitem border-2 rounded-lg p-4 bg-gradient-to-br from-white to-slate-200 hover:border-blue-400">
       <AddMemberBox color={color} />
@@ -41,7 +43,9 @@ export default function TaskItem({ task }) {
               d="M6 6.878V6a2.25 2.25 0 012.25-2.25h7.5A2.25 2.25 0 0118 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 004.5 9v.878m13.5-3A2.25 2.25 0 0119.5 9v.878m0 0a2.246 2.246 0 00-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0121 12v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6c0-.98.626-1.813 1.5-2.122"
             />
           </svg>
-          <span className={`${color} px-1.5 font-medium rounded-lg`}>
+          <span
+            className={`${color} text-slate-100 px-1.5 font-medium rounded-lg`}
+          >
             {priority}
           </span>
         </p>
@@ -65,18 +69,9 @@ export default function TaskItem({ task }) {
         </p>
       </div>
 
-      <ChangeTaskStatus />
+      <ChangeTaskStatus task_id={id} default_value={status} />
 
-      <div className="flex justify-end items-center mt-3">
-        <div className="flex -space-x-4">
-          <Avatar />
-          <Avatar />
-          <Avatar />
-          <p className="w-10 h-10 rounded-full border-4 bg-slate-200 border-white text-lg font-medium flex justify-center items-center">
-            <span>+3</span>
-          </p>
-        </div>
-      </div>
+      <TeamMembersAvatar team_members={team_members} />
     </div>
   );
 }

@@ -10,6 +10,7 @@ export const MyContext = createContext({});
 
 export default function MyProvider({ children }) {
   const [loading, setLoading] = useState(true);
+  const [refetch, setRefetch] = useState(false);
   const [auth, setAuth] = useState(null);
 
   /**
@@ -20,6 +21,14 @@ export default function MyProvider({ children }) {
   function getData(key) {
     const result = localStorage.getItem(key);
     return result ? JSON.parse(result) : null;
+  }
+
+  function getTasks() {
+    return getData(TASKS_DB) ? getData(TASKS_DB) : [];
+  }
+
+  function getUsers() {
+    return getData(USERS_DB) ? getData(USERS_DB) : [];
   }
 
   /**
@@ -100,14 +109,14 @@ export default function MyProvider({ children }) {
     const users = getData(USERS_DB);
 
     if (users) {
-      setData(USERS_DB, JSON.stringify([...users, user]));
+      setData(USERS_DB, [...users, user]);
 
       return {
         success: true,
         message: "New account create successful.",
       };
     } else {
-      setData(USERS_DB, JSON.stringify([user]));
+      setData(USERS_DB, [user]);
 
       return {
         success: true,
@@ -129,11 +138,16 @@ export default function MyProvider({ children }) {
       color = "bg-blue-600";
     } else {
       // for low
-      color = "bg-yellow-600";
+      color = "bg-green-600";
     }
     return color;
   }
 
+  /**
+   *
+   * @param {object} task
+   * @returns object
+   */
   function addNewTask(task) {
     const auth_user = getData(AUTH_DB);
 
@@ -156,7 +170,7 @@ export default function MyProvider({ children }) {
           username,
           image,
         },
-        team_members: [],
+        team_members: [{ id: uuidv4(), username, userId, image }],
       };
 
       const tasks = getData(TASKS_DB);
@@ -173,27 +187,50 @@ export default function MyProvider({ children }) {
     }
   }
 
-  function getTasks() {
-    return getData(TASKS_DB) ? getData(TASKS_DB) : [];
-  }
-
-  function getUsers() {
-    return getData(USERS_DB) ? getData(USERS_DB) : [];
-  }
-
   // function addTeamMember() {}
+
+  /**
+   *
+   * @param {string} task_id
+   * @param {string} status
+   */
+
+  function taskStatusChange(task_id, status) {
+    const tasks = getData(TASKS_DB);
+
+    if (tasks) {
+      const newTasks = tasks.map((task) => {
+        if (task.id == task_id) {
+          return {
+            ...task,
+            status,
+          };
+        } else {
+          return task;
+        }
+      });
+      setData(TASKS_DB, newTasks);
+      return success("Status update successfull.", newTasks);
+    } else {
+      return error("Task is not found.");
+    }
+  }
 
   useEffect(() => {
     // get data form localstore and initilize state as default
     setLoading(true);
+    setRefetch(true);
+
     const loginUserInfo = getData(AUTH_DB);
 
     if (loginUserInfo) {
       setAuth(loginUserInfo);
       setLoading(false);
+      setRefetch(false);
     } else {
       setAuth(null);
       setLoading(false);
+      setRefetch(false);
     }
   }, []);
 
@@ -206,6 +243,9 @@ export default function MyProvider({ children }) {
     addNewTask,
     getTasks,
     getUsers,
+    taskStatusChange,
+    refetch,
+    setRefetch,
   };
 
   return <MyContext.Provider value={state}>{children}</MyContext.Provider>;

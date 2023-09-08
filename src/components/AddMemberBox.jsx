@@ -1,7 +1,23 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { MyContext } from "../context/MyContext";
 
 export default function AddMemberBox({ color }) {
+  const { getUsers, auth } = useContext(MyContext);
   const [addMemberBox, setAddMemberBox] = useState(false);
+  const [teamMembers, setTeamMembers] = useState([]);
+
+  useEffect(() => {
+    const users = getUsers();
+    const teamMembersData = users.filter((user) => user.userId !== auth.userId);
+    if (teamMembersData) {
+      setTeamMembers(teamMembersData);
+    } else {
+      setTeamMembers([]);
+    }
+    console.log(teamMembersData);
+  }, [getUsers, auth]);
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -61,10 +77,11 @@ export default function AddMemberBox({ color }) {
                 id="status"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
               >
-                <option value="">Team member 1</option>
-                <option value="">Team member 2</option>
-                <option value="">Team member 3</option>
-                <option value="">Team member 4</option>
+                {teamMembers.map((teamMember) => (
+                  <option key={teamMember?.id} value={teamMember?.id}>
+                    {teamMember.username}
+                  </option>
+                ))}
               </select>
               <button className="bg-blue-600 hover:bg-blue-700 py-1.5 px-3 text-white rounded-md">
                 Add
@@ -76,3 +93,7 @@ export default function AddMemberBox({ color }) {
     </div>
   );
 }
+
+AddMemberBox.propTypes = {
+  color: PropTypes.string.isRequired,
+};

@@ -1,8 +1,21 @@
+import { useNavigate } from "react-router-dom";
 import { MyContext } from "../context/MyContext";
 import { useContext } from "react";
+import toast from "react-hot-toast";
 
 export default function Profile() {
-  const { auth } = useContext(MyContext);
+  const navigate = useNavigate();
+  const { auth, logout } = useContext(MyContext);
+
+  function handleLogout() {
+    const result = logout();
+    if (result?.success) {
+      toast.success(result.message);
+      navigate("/login");
+    } else {
+      toast.error(result.message);
+    }
+  }
 
   return (
     <div>
@@ -38,7 +51,10 @@ export default function Profile() {
           <p className="text-xl">
             <b>Task:</b> 3
           </p>
-          <button className="mt-5 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+          <button
+            onClick={handleLogout}
+            className="mt-5 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+          >
             Logout
           </button>
         </div>
