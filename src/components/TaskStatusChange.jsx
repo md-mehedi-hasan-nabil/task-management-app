@@ -2,20 +2,23 @@ import { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import { MyContext } from "../context/MyContext";
 import toast from "react-hot-toast";
+import { db } from "../db/db";
 
-export default function ChangeTaskStatus({ task_id, default_value }) {
-  const { taskStatusChange, setRefetch } = useContext(MyContext);
+export default function TaskStatusChange({ task_id, default_value }) {
+  const { setRefetch } = useContext(MyContext);
   const [status, setStatus] = useState(default_value);
 
   function handleStatusChange(value, taskId) {
     setStatus(value);
-    const result = taskStatusChange(taskId, value);
+    const result = db.tasks.update(taskId, {
+      status: value,
+    });
 
-    if (result.success) {
-      toast.success(result.message);
+    if (result) {
+      toast.success("Task status change.");
       setRefetch(true);
     } else {
-      toast.success(result.message);
+      toast.success("Some errors occurred.");
     }
   }
 
@@ -41,7 +44,7 @@ export default function ChangeTaskStatus({ task_id, default_value }) {
   );
 }
 
-ChangeTaskStatus.propTypes = {
+TaskStatusChange.propTypes = {
   task_id: PropTypes.string.isRequired,
   default_value: PropTypes.string.isRequired,
 };

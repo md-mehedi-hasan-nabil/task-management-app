@@ -1,10 +1,12 @@
 import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
+import { MyContext } from "../context/MyContext";
+import { useContext } from "react";
 
 export default function PublicRoute({ children }) {
-  const isLoggedIn = localStorage.getItem("auth")
+  const { auth } = useContext(MyContext);
 
-  return !isLoggedIn ? children : <Navigate to="/" />;
+  return !auth ? children : <Navigate to="/" />;
 }
 
 PublicRoute.propTypes = {

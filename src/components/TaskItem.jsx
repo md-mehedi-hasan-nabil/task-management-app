@@ -1,10 +1,9 @@
 import PropTypes from "prop-types";
 import AddMemberBox from "./AddMemberBox";
-import ChangeTaskStatus from "./ChangeTaskStatus";
+import ChangeTaskStatus from "./TaskStatusChange";
 import TeamMembersAvatar from "./TeamMembersAvatar";
 
 export default function TaskItem({ task }) {
-  console.log(task);
   const {
     id,
     title,
@@ -17,7 +16,7 @@ export default function TaskItem({ task }) {
   } = task;
 
   return (
-    <div className="taskitem border-2 rounded-lg p-4 bg-gradient-to-br from-white to-slate-200 hover:border-blue-400">
+    <div className="taskitem border-2 rounded-lg p-4 bg-gradient-to-br from-white to-slate-200 hover:border-blue-400 hover:cursor-pointer">
       {status !== "completed" && <AddMemberBox color={color} />}
 
       <div>

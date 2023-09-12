@@ -2,29 +2,59 @@ import PropTypes from "prop-types";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { MyContext } from "../context/MyContext";
+import { v4 as uuidv4 } from "uuid";
 import toast from "react-hot-toast";
+import { db } from "../db/db";
 
 export default function AddTaskModal({ closeModal }) {
-  const { addNewTask, setRefetch } = useContext(MyContext);
+  const { auth, setRefetch } = useContext(MyContext);
   const { register, handleSubmit, reset } = useForm();
+  console.log(auth);
 
-  function onSubmit(data) {
+  function getPriorityColor(priority) {
+    let color = "";
+    if (priority === "high") {
+      color = "bg-red-600";
+    } else if (priority === "medium") {
+      color = "bg-blue-600";
+    } else {
+      // for low
+      color = "bg-green-600";
+    }
+    return color;
+  }
+
+  async function onSubmit(data) {
     const { title, description, due_date, priority } = data;
-    
+    const { username, image, id } = auth;
+    const color = getPriorityColor(priority);
+
     if (title && description && due_date && priority) {
-      const result = addNewTask({
+      const newTask = {
+        id: uuidv4(),
         title,
         description,
-        due_date,
+        createdAt: new Date().toLocaleDateString(),
         priority,
-      });
-      if (result.success) {
+        color,
+        due_date,
+        status: "pending",
+        user: {
+          id,
+          username,
+          image,
+        },
+        team_members: [{ id: uuidv4(), username, userId: id, image }],
+      };
+      const taskResultId = await db.tasks.add(newTask);
+
+      if (taskResultId) {
         reset();
-        toast.success(result?.message);
+        toast.success("Task add successful.");
         closeModal();
         setRefetch(true);
       } else {
-        toast.error(result?.message);
+        toast.error("Some errors occurred.");
       }
     } else {
       toast.error("Field required.");

@@ -3,22 +3,48 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { MyContext } from "../context/MyContext";
 import toast from "react-hot-toast";
+import { db } from "../db/db";
+import { useLiveQuery } from "dexie-react-hooks";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useContext(MyContext);
+  const users = useLiveQuery(() => db.users.toArray());
+  const { setAuth } = useContext(MyContext);
 
   const { register, handleSubmit } = useForm();
 
-  function onSubmit(data) {
+  async function onSubmit(data) {
     const { username, password } = data;
-    const result = login(username, password);
 
-    if (result?.success) {
-      toast.success(result.message);
-      navigate("/")
-    } else {
-      toast.error(result.message);
+    const user = users.find(
+      (user) => user.username === username && user.password === password
+    );
+
+    if (user) {
+      const {
+        id,
+        username: storeUsername,
+        password: storePassword,
+        bio,
+        image,
+      } = user;
+
+      const obj = {
+        id: id + "-" + storeUsername,
+        username: storeUsername,
+        password: storePassword,
+        bio,
+        image,
+      };
+
+      const resultId = await db.auth.add(obj);
+      if (resultId) {
+        setAuth(obj);
+        toast.success("Account login successful.");
+        navigate("/");
+      } else {
+        toast.error("Something is wrong.");
+      }
     }
   }
   return (

@@ -1,22 +1,24 @@
 import { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { MyContext } from "../context/MyContext";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "../db/db";
 
 export default function AddMemberBox({ color }) {
-  const { getUsers, auth } = useContext(MyContext);
+  const users = useLiveQuery(() => db.users.toArray());
+  const { auth } = useContext(MyContext);
   const [addMemberBox, setAddMemberBox] = useState(false);
   const [teamMembers, setTeamMembers] = useState([]);
 
   useEffect(() => {
-    const users = getUsers();
-    const teamMembersData = users.filter((user) => user.id !== auth.id);
+    const teamMembersData = users?.filter((user) => user.id !== auth.id);
     if (teamMembersData) {
       setTeamMembers(teamMembersData);
     } else {
       setTeamMembers([]);
     }
     console.log(teamMembersData);
-  }, [getUsers, auth]);
+  }, [users, auth]);
 
   return (
     <div>

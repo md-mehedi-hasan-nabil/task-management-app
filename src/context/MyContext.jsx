@@ -1,10 +1,15 @@
 import PropTypes from "prop-types";
 import { createContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "../db/db";
 
-const AUTH_DB = "auth";
-const TASKS_DB = "tasks";
-const USERS_DB = "users";
+const INDEXED_DB_NAME = "collaborative-task-management";
+const AUTH_COLLECTION = "auth";
+const TASKS_COLLECTION = "tasks";
+const USERS_COLLECTION = "users";
+
+// let idb = indexedDB.open("collaborative-task-management", 1);
 
 export const MyContext = createContext({});
 
@@ -18,27 +23,84 @@ export default function MyProvider({ children }) {
    * @param {string} key
    * get data from localStorage
    */
-  function getData(key) {
-    const result = localStorage.getItem(key);
-    return result ? JSON.parse(result) : null;
+  function getData(collection, callback) {
+    try {
+      const idb = indexedDB.open(INDEXED_DB_NAME, 1);
+
+      idb.onsuccess = function () {
+        const db = idb.result;
+
+        if (db.objectStoreNames.contains(collection)) {
+          const objectStore = db
+            .transaction(collection)
+            .objectStore(collection);
+          objectStore.openCursor().onsuccess = function (event) {
+            const cursor = event.target.result;
+            // console.log(cursor.value);
+            typeof callback === "function" && callback(cursor.value);
+            // cursor?.continue();
+          };
+        } else {
+          typeof callback === "function" && callback(null);
+        }
+      };
+
+      // const result = localStorage.getItem(key);
+      // return result ? JSON.parse(result) : null;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  function getTasks() {
-    return getData(TASKS_DB) ? getData(TASKS_DB) : [];
+  function getTasks(callback) {
+    return getData(TASKS_COLLECTION, callback);
   }
 
-  function getUsers() {
-    return getData(USERS_DB) ? getData(USERS_DB) : [];
+  function getUsers(callback) {
+    return getData(USERS_COLLECTION, callback);
   }
 
   /**
    *
    * @param {string} key
    * @param {string} value
-   * set data to localStorage
+   * set data to indexedDB
    */
-  function setData(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+  function setData(collection, value, callback) {
+    try {
+      const idb = indexedDB.open(INDEXED_DB_NAME, 1);
+
+      idb.onupgradeneeded = function () {
+        const db = idb.result;
+
+        const objectStore = db.createObjectStore(collection, {
+          keyPath: "username",
+        });
+        console.log(objectStore);
+        objectStore.createIndex("password", "password", { unique: false });
+        objectStore.createIndex("bio", "bio", { unique: false });
+        objectStore.createIndex("image", "image", { unique: false });
+
+        objectStore.transaction.oncomplete = function () {
+          const userObjectStore = db
+            .transaction(collection, "readwrite")
+            .objectStore(collection);
+          userObjectStore.add(value);
+          console.log(userObjectStore);
+          typeof callback === "function" && callback();
+        };
+      };
+
+      // idb.onsuccess = function () {
+      //   const res = idb.result;
+      //   let tx = res.transaction(collection, "readwrite");
+      //   let store = tx.objectStore(collection);
+      //   store.add(value)
+      // };
+      // localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   /**
@@ -70,124 +132,16 @@ export default function MyProvider({ children }) {
     };
   }
 
-  /**
-   *
-   * @param {string} username
-   * @param {string} password
-   * @returns
-   */
-  function login(username, password) {
-    const users = getData(USERS_DB);
-    if (users) {
-      const user = users.find(
-        (user) => user.password === password && user.username === username
-      );
-
-      if (user) {
-        setAuth(user);
-        setData(AUTH_DB, user);
-        return success("Login successfull", user);
-      } else {
-        return error("Username or password is wrong");
-      }
-    }
-  }
 
   function logout() {
-    const auth = getData(AUTH_DB);
+    const auth = getData(AUTH_COLLECTION);
     if (auth) {
-      localStorage.removeItem(AUTH_DB);
+      localStorage.removeItem(AUTH_COLLECTION);
       return success("Logout success.");
     } else {
       return error("User information is not found.");
     }
   }
-
-  function createAccount({ username, password, bio, image }) {
-    const user = { id: uuidv4(), username, password, bio, image };
-
-    const users = getData(USERS_DB);
-
-    if (users) {
-      setData(USERS_DB, [...users, user]);
-
-      return {
-        success: true,
-        message: "New account create successful.",
-      };
-    } else {
-      setData(USERS_DB, [user]);
-
-      return {
-        success: true,
-        message: "New account create successful.",
-      };
-    }
-  }
-
-  /**
-   *
-   * @param {string} priority
-   * @returns {string}
-   */
-  function getPriorityColor(priority) {
-    let color = "";
-    if (priority === "high") {
-      color = "bg-red-600";
-    } else if (priority === "medium") {
-      color = "bg-blue-600";
-    } else {
-      // for low
-      color = "bg-green-600";
-    }
-    return color;
-  }
-
-  /**
-   *
-   * @param {object} task
-   * @returns object
-   */
-  function addNewTask(task) {
-    const auth_user = getData(AUTH_DB);
-
-    if (auth_user) {
-      const { username, id, image } = auth_user;
-      const { title, description, priority, due_date } = task;
-      const color = getPriorityColor(priority);
-
-      const newTask = {
-        id: uuidv4(),
-        title,
-        description,
-        createdAt: new Date().toLocaleDateString(),
-        priority,
-        color,
-        due_date,
-        status: "pending",
-        user: {
-          id,
-          username,
-          image,
-        },
-        team_members: [{ id: uuidv4(), username, userId: id, image }],
-      };
-
-      const tasks = getData(TASKS_DB);
-
-      if (tasks) {
-        setData(TASKS_DB, [...tasks, newTask]);
-        return success("Task add successfull.", newTask);
-      } else {
-        setData(TASKS_DB, [newTask]);
-        return success("Task add successfull.", newTask);
-      }
-    } else {
-      return error("unauthorised");
-    }
-  }
-
-  // function addTeamMember() {}
 
   /**
    *
@@ -196,7 +150,7 @@ export default function MyProvider({ children }) {
    */
 
   function taskStatusChange(task_id, status) {
-    const tasks = getData(TASKS_DB);
+    const tasks = getData(TASKS_COLLECTION);
 
     if (tasks) {
       const newTasks = tasks.map((task) => {
@@ -209,22 +163,22 @@ export default function MyProvider({ children }) {
           return task;
         }
       });
-      setData(TASKS_DB, newTasks);
+      setData(TASKS_COLLECTION, newTasks);
       return success("Status update successfull.", newTasks);
     } else {
       return error("Task is not found.");
     }
   }
 
+  const authInfo = useLiveQuery(() => db.auth.toArray());
+
   useEffect(() => {
-    // get data form localstore and initilize state as default
+    // get data form IndexedDB and initilize state as default
     setLoading(true);
     setRefetch(true);
 
-    const loginUserInfo = getData(AUTH_DB);
-
-    if (loginUserInfo) {
-      setAuth(loginUserInfo);
+    if (authInfo?.length > 0) {
+      setAuth(authInfo[0]);
       setLoading(false);
       setRefetch(false);
     } else {
@@ -232,18 +186,12 @@ export default function MyProvider({ children }) {
       setLoading(false);
       setRefetch(false);
     }
-  }, []);
+  }, [authInfo, refetch]);
 
   const state = {
     loading,
-    createAccount,
-    login,
     logout,
     auth,
-    addNewTask,
-    getTasks,
-    getUsers,
-    taskStatusChange,
     refetch,
     setRefetch,
   };

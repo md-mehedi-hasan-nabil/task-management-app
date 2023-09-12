@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "dexie": "^3.2.4",
+    "dexie-react-hooks": "^1.1.6",
     "flowbite": "^1.8.1",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",

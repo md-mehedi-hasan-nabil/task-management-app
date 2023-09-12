@@ -1,12 +1,11 @@
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { MyContext } from "../context/MyContext";
 import toast from "react-hot-toast";
+import { db } from "../db/db";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Register() {
   const navigate = useNavigate();
-  const { createAccount } = useContext(MyContext);
 
   const {
     register,
@@ -18,19 +17,24 @@ export default function Register() {
     const { username, password, bio, image: imageFile } = data;
 
     let reader = new FileReader();
+
     reader.onloadend = function () {
-      const result = createAccount({
-        username,
-        password,
-        bio,
-        image: reader.result,
-      });
-      if (result?.success) {
-        toast.success(result.message);
-        navigate("/login");
-      } else {
-        toast.error(result.message);
-      }
+      (async () => {
+        const id = await db.users.add({
+          id: uuidv4(),
+          username,
+          password,
+          bio,
+          image: reader.result,
+        });
+    
+        if (id) {
+          toast.success("Account create successful.");
+          navigate("/login");
+        } else {
+          toast.error("Something is wrong.");
+        }
+      })();
     };
     reader.readAsDataURL(imageFile[0]);
   }
