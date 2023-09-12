@@ -16,7 +16,7 @@ export default function Login() {
   async function onSubmit(data) {
     const { username, password } = data;
 
-    const user = users.find(
+    const user = users?.find(
       (user) => user.username === username && user.password === password
     );
 

@@ -3,22 +3,60 @@ import PropTypes from "prop-types";
 import { MyContext } from "../context/MyContext";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/db";
+import toast from "react-hot-toast";
 
-export default function AddMemberBox({ color }) {
+export default function AddMemberBox({ color, taskId, team_members }) {
   const users = useLiveQuery(() => db.users.toArray());
-  const { auth } = useContext(MyContext);
+  const tasks = useLiveQuery(() => db.tasks.toArray());
+  const { auth, setRefetch } = useContext(MyContext);
   const [addMemberBox, setAddMemberBox] = useState(false);
   const [teamMembers, setTeamMembers] = useState([]);
-
+  const [teamMemberId, setTeamMemberId] = useState("");
+  
+  //TODO: change no team member found ui.
   useEffect(() => {
-    const teamMembersData = users?.filter((user) => user.id !== auth.id);
+    const existingTeamMembers = team_members?.map(
+      (team_member) => team_member.username
+    );
+
+    const teamMembersData = users?.filter(
+      (user) => !existingTeamMembers.includes(user.username)
+    );
+
     if (teamMembersData) {
+      teamMembersData[0]?.id
+        ? setTeamMemberId(teamMembersData[0]?.id)
+        : setTeamMemberId("");
       setTeamMembers(teamMembersData);
     } else {
       setTeamMembers([]);
     }
-    console.log(teamMembersData);
-  }, [users, auth]);
+  }, [users, auth, team_members]);
+
+  function handleAddTeamMember() {
+    const task = tasks.find((task) => task.id === taskId);
+    const member = users.find((user) => user.id === teamMemberId);
+    delete member.password;
+
+    const teamMemberObj = {
+      ...member,
+      userId: member.id + "-" + member.username,
+    };
+
+    const team_membersArray = [...task.team_members, teamMemberObj];
+
+    const result = db.tasks.update(taskId, {
+      team_members: team_membersArray,
+    });
+
+    if (result) {
+      toast.success("New team member add.");
+      setRefetch(true);
+      setAddMemberBox(false);
+    } else {
+      toast.success("Some errors occurred.");
+    }
+  }
 
   return (
     <div>
@@ -78,16 +116,24 @@ export default function AddMemberBox({ color }) {
               {teamMembers?.length > 0 ? (
                 <>
                   <select
+                    value={teamMemberId}
+                    onChange={(e) => {
+                      console.log(e.target.value);
+                      setTeamMemberId(e.target.value);
+                    }}
                     id="status"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
                   >
                     {teamMembers.map((teamMember) => (
-                      <option key={teamMember?.userId} value={teamMember?.id}>
+                      <option key={teamMember.id} value={teamMember.id}>
                         {teamMember.username}
                       </option>
                     ))}
                   </select>
-                  <button className="bg-blue-600 hover:bg-blue-700 py-1.5 px-3 text-white rounded-md">
+                  <button
+                    onClick={handleAddTeamMember}
+                    className="bg-blue-600 hover:bg-blue-700 py-1.5 px-3 text-white rounded-md"
+                  >
                     Add
                   </button>
                 </>
@@ -107,4 +153,6 @@ export default function AddMemberBox({ color }) {
 
 AddMemberBox.propTypes = {
   color: PropTypes.string.isRequired,
+  taskId: PropTypes.string.isRequired,
+  team_members: PropTypes.array.isRequired,
 };

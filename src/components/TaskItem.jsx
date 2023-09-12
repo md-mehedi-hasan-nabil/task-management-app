@@ -17,7 +17,7 @@ export default function TaskItem({ task }) {
 
   return (
     <div className="taskitem border-2 rounded-lg p-4 bg-gradient-to-br from-white to-slate-200 hover:border-blue-400 hover:cursor-pointer">
-      {status !== "completed" && <AddMemberBox color={color} />}
+      {status !== "completed" && <AddMemberBox taskId={id} color={color} team_members={team_members} />}
 
       <div>
         <span className="capitalize bg-red-100 text-red-800 text-xs font-medium mr-2 px-2 py-0.5 rounded-full border border-red-400">

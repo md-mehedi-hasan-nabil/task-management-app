@@ -9,7 +9,6 @@ import { db } from "../db/db";
 export default function AddTaskModal({ closeModal }) {
   const { auth, setRefetch } = useContext(MyContext);
   const { register, handleSubmit, reset } = useForm();
-  console.log(auth);
 
   function getPriorityColor(priority) {
     let color = "";
@@ -62,7 +61,7 @@ export default function AddTaskModal({ closeModal }) {
   }
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 max-h-full flex justify-center backdrop-blur-sm bg-slate-900/60 items-center">
+      <div className="fixed top-0 left-0 right-0 z-50 w-full h-screen p-4 overflow-x-hidden overflow-y-auto md:inset-0  flex justify-center backdrop-blur-sm bg-slate-900/60 items-center">
         <div className="relative w-full max-w-md max-h-full">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <button

@@ -1,20 +1,15 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { MyContext } from "../context/MyContext";
 import { useContext } from "react";
 import toast from "react-hot-toast";
+import { db } from "../db/db";
 
 export default function Navbar() {
-  const navigate = useNavigate();
-  const { auth, logout } = useContext(MyContext) || {};
+  const { auth } = useContext(MyContext) || {};
 
-  function handleLogout() {
-    const result = logout();
-    if (result?.success) {
-      toast.success(result.message);
-      navigate("/login");
-    } else {
-      toast.error(result.message);
-    }
+  async function handleLogout() {
+    await db.auth.clear();
+    toast.success("Logout successfull.");
   }
 
   return (
@@ -41,22 +36,30 @@ export default function Navbar() {
                 alt="avatar"
               />
             </button>
-            {/* <!-- Dropdown --> */}
-            <div
-              className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow"
-              id="profile-dropdown-menu"
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded-full bg-slate-100 hover:bg-slate-200"
+              title="logout"
             >
-              <ul className="py-2 font-medium" role="none">
-                <li onClick={handleLogout}>
-                  <button
-                    className="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    role="menuitem"
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-box-arrow-right"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
+                />
+                <path
+                  fillRule="evenodd"
+                  d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
+                />
+              </svg>
+            </button>
+
             <button
               data-collapse-toggle="navbar-language"
               type="button"
@@ -96,27 +99,24 @@ export default function Navbar() {
               <NavLink
                 to="/"
                 className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0"
-                aria-current="page"
               >
                 Home
               </NavLink>
             </li>
             <li>
               <NavLink
-                to="/tasks"
+                to="/profile"
                 className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0"
-                aria-current="page"
               >
-                Tasks
+                Profile
               </NavLink>
             </li>
             <li>
               <NavLink
-                to="/profile"
+                to="/dashboard"
                 className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0"
-                aria-current="page"
               >
-                Profile
+                Dashboard
               </NavLink>
             </li>
           </ul>
