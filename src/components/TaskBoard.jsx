@@ -4,9 +4,11 @@ import TaskStatusBoard from "./TaskStatusBoard";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/db";
 
+
 export default function TaskBoard() {
   const tasks = useLiveQuery(() => db.tasks.toArray());
-  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenTaskAddModal, setIsOpenTaskAddModal] = useState(false);
+
   const [pendingTasks, setPendingTasks] = useState([]);
   const [inProgressTasks, setInProgressTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
@@ -29,18 +31,20 @@ export default function TaskBoard() {
     }
   }, [tasks]);
 
-  const openModal = () => {
-    setIsOpenModal(true);
+  const openTaskAddModal = () => {
+    setIsOpenTaskAddModal(true);
   };
-  const closeModal = () => {
-    setIsOpenModal(false);
+  const closeTaskAddModal = () => {
+    setIsOpenTaskAddModal(false);
   };
+
+
   return (
     <>
-      {isOpenModal && <AddTaskModal closeModal={closeModal} />}
+      {isOpenTaskAddModal && <AddTaskModal closeModal={closeTaskAddModal} />}
       <div className="grid grid-cols-12 gap-4">
         <TaskStatusBoard
-          openModal={openModal}
+          openTaskAddModal={openTaskAddModal}
           status="pending"
           tasks={pendingTasks}
         />

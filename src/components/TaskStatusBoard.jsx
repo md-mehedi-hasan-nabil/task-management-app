@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 import TaskItem from "./TaskItem";
+import FilterTask from "./FilterTask";
 
-export default function TaskStatusBoard({ status, openModal, tasks }) {
+export default function TaskStatusBoard({ status, openTaskAddModal, tasks }) {
   let content;
   if (tasks?.length === 0) {
     content = <h2>No task here</h2>;
@@ -19,12 +20,15 @@ export default function TaskStatusBoard({ status, openModal, tasks }) {
       <div className="flex justify-between">
         <h2 className="text-lg ml-1 mb-2 font-medium capitalize">{status}</h2>
         {status === "pending" && (
-          <button
-            onClick={openModal}
-            className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 rounded-lg"
-          >
-            Add New Task
-          </button>
+          <>
+            <FilterTask />
+            <button
+              onClick={openTaskAddModal}
+              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 rounded-lg"
+            >
+              Add New Task
+            </button>
+          </>
         )}
       </div>
       <div className="flex flex-col gap-4 overflow-y-scroll h-full pt-2">
@@ -37,5 +41,5 @@ export default function TaskStatusBoard({ status, openModal, tasks }) {
 TaskStatusBoard.propTypes = {
   status: PropTypes.string.isRequired,
   tasks: PropTypes.array.isRequired,
-  openModal: PropTypes.func,
+  openTaskAddModal: PropTypes.func.isRequired,
 };
