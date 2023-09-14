@@ -10,6 +10,7 @@ export default function MyProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [refetch, setRefetch] = useState(false);
   const [auth, setAuth] = useState(null);
+  const [filterKeyword, setFilterKeyword] = useState("");
 
   useEffect(() => {
     // get data form IndexedDB and initilize state as default
@@ -32,6 +33,8 @@ export default function MyProvider({ children }) {
     auth,
     refetch,
     setRefetch,
+    filterKeyword,
+    setFilterKeyword,
   };
 
   return <MyContext.Provider value={state}>{children}</MyContext.Provider>;

@@ -1,10 +1,12 @@
+import { useContext } from "react";
+import { MyContext } from "../context/MyContext";
+
 export default function FilterTask() {
+  const { filterKeyword, setFilterKeyword } = useContext(MyContext);
+
   return (
     <div className="flex items-center gap-2">
-      <label
-        htmlFor=""
-        className="block text-sm font-medium text-gray-900"
-      >
+      <label htmlFor="" className="block text-sm font-medium text-gray-900">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -20,10 +22,14 @@ export default function FilterTask() {
           />
         </svg>
       </label>
-      <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+      <select
+        value={filterKeyword}
+        onChange={(e) => setFilterKeyword(e.target.value)}
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
+      >
         <option value="">All</option>
-        <option value="">Date</option>
-        <option value="">priority</option>
+        <option value="due_date">Date</option>
+        <option value="priority">Priority</option>
       </select>
     </div>
   );

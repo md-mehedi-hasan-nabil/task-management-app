@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react";
+/**
+ * This is taskboard. 
+ * There are show task board such as Pending, In Progress, Completed.
+ */
+
+import { useEffect, useState, useContext } from "react";
 import AddTaskModal from "./AddTaskModal";
 import TaskStatusBoard from "./TaskStatusBoard";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/db";
-
+import { MyContext } from "../context/MyContext";
 
 export default function TaskBoard() {
+  const { filterKeyword } = useContext(MyContext);
   const tasks = useLiveQuery(() => db.tasks.toArray());
   const [isOpenTaskAddModal, setIsOpenTaskAddModal] = useState(false);
 
@@ -15,21 +21,42 @@ export default function TaskBoard() {
 
   useEffect(() => {
     if (tasks?.length > 0) {
-      const pendingTasksData = tasks?.filter(
+      /**
+       * sort task by date and priority
+       */
+      const modifyTask = tasks.sort((a, b) => {
+        if (filterKeyword === "priority") {
+          return b.priority - a.priority;
+        } else if (filterKeyword === "due_date") {
+          return (
+            new Date(b.due_date).getTime() - new Date(a.due_date).getTime()
+          );
+        } else {
+          return 0;
+        }
+      });
+
+      /**
+       * filter tasks by task status
+       */
+      const pendingTasksData = modifyTask?.filter(
         (task) => task.status === "pending"
       );
-      const inProgressTasksData = tasks?.filter(
+      const inProgressTasksData = modifyTask?.filter(
         (task) => task.status === "inprogress"
       );
-      const completedTasksData = tasks?.filter(
+      const completedTasksData = modifyTask?.filter(
         (task) => task.status === "completed"
       );
 
+      /**
+       * set filter tasks in state
+       */
       setPendingTasks(pendingTasksData);
       setInProgressTasks(inProgressTasksData);
       setCompletedTasks(completedTasksData);
     }
-  }, [tasks]);
+  }, [tasks, filterKeyword]);
 
   const openTaskAddModal = () => {
     setIsOpenTaskAddModal(true);
@@ -37,7 +64,6 @@ export default function TaskBoard() {
   const closeTaskAddModal = () => {
     setIsOpenTaskAddModal(false);
   };
-
 
   return (
     <>

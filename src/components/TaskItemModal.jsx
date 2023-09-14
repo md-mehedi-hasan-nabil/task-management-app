@@ -121,9 +121,9 @@ export default function TaskItemModal({ closeModal, task }) {
                     name="priority"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
                   >
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
+                    <option value="3">High</option>
+                    <option value="2">Medium</option>
+                    <option value="1">Low</option>
                   </select>
                 </div>
 
@@ -134,26 +134,11 @@ export default function TaskItemModal({ closeModal, task }) {
                   Save change Task
                 </button>
               </form>
+              <button className="w-full mt-3 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+              Delete task
+              </button>
             </div>
             <div className="col-span-6 px-6 py-6 lg:px-8">
-              {/* <h3 className="flex items-center gap-2 mb-4 text-xl font-medium text-gray-900">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25"
-                  />
-                </svg>
-
-                <span>{title}</span>
-              </h3> */}
               <div className="mt-6"></div>
               {status !== "completed" && (
                 <AddMemberBox

@@ -1,12 +1,15 @@
-import PropTypes from "prop-types";
+/**
+ * Task card commponents
+ * There are show task title, description, status, date and team members.
+ */
 
+import PropTypes from "prop-types";
 import TeamMembersAvatar from "./TeamMembersAvatar";
 import TaskItemModal from "./TaskItemModal";
 import { useState } from "react";
 
 export default function TaskItem({ task }) {
   const {
-    id,
     title,
     description,
     status,
@@ -25,14 +28,25 @@ export default function TaskItem({ task }) {
     setIsOpenTaskItemModal(false);
   };
 
+  function getTaskPriority(value) {
+    if (value == 3) {
+      return "high";
+    } else if (value == 2) {
+      return "medium";
+    } else {
+      return "low";
+    }
+  }
+
   return (
     <>
-      {isOpenTaskItemModal && <TaskItemModal task={task} closeModal={closeTaskItemModal} />}
+      {isOpenTaskItemModal && (
+        <TaskItemModal task={task} closeModal={closeTaskItemModal} />
+      )}
       <div
         onClick={openTaskItemModal}
         className="taskitem border-2 rounded-lg p-4 bg-gradient-to-br from-white to-slate-200 select-none hover:border-blue-400 hover:cursor-pointer"
       >
-  
         <div>
           <span className="capitalize bg-red-100 text-red-800 text-xs font-medium mr-2 px-2 py-0.5 rounded-full border border-red-400">
             {status}
@@ -62,7 +76,7 @@ export default function TaskItem({ task }) {
             <span
               className={`${color} text-slate-100 px-1.5 font-medium rounded-lg`}
             >
-              {priority}
+              {getTaskPriority(priority)}
             </span>
           </p>
           <p className="flex items-center gap-1 text-sm">
